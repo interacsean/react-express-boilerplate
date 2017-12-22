@@ -8,11 +8,11 @@ lib-cov
 *.gz
 *.swp
 
-pids
-logs
-results
-tmp
-coverage
+/pids
+/logs
+/results
+/tmp
+/coverage
 
 # API keys
 .env
