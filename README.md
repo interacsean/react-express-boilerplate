@@ -1,8 +1,7 @@
 ### Todo to get on track
 
  - Remove Jade?
- - Server routes to be moved to separate file
- - Update packages
+ - Update to react-router 4
 
 ---
 

@@ -21,11 +21,8 @@ dotenv.load();
 require('babel-core/register');
 require('babel-polyfill');
 
-// Controllers
-var contactController = require('./controllers/contact');
-
 // React and Server-Side Rendering
-var routes = require('./app/routes');
+var appRoutes = require('./app/routes');
 var configureStore = require('./app/store/configureStore').default;
 
 var app = express();
@@ -35,7 +32,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.set('port', process.env.PORT || 3000);
 app.use(compression());
-app.use(sass({ src: path.join(__dirname, 'public'), dest: path.join(__dirname, 'public') }));
+app.use(sass({ src: path.join(__dirname, 'styles'), dest: path.join(__dirname, 'public/css') }));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -51,7 +48,9 @@ if (app.get('env') === 'development') {
   app.use(require('webpack-hot-middleware')(compiler));
 }
 
-app.post('/contact', contactController.contactPost);
+// Register express routes
+var serverRoutes = require('./server/routes');
+serverRoutes(app);
 
 // React server rendering
 app.use(function(req, res) {
@@ -61,7 +60,7 @@ app.use(function(req, res) {
 
   var store = configureStore(initialState);
 
-  Router.match({ routes: routes.default(store), location: req.url }, function(err, redirectLocation, renderProps) {
+  Router.match({ routes: appRoutes.default(store), location: req.url }, function(err, redirectLocation, renderProps) {
     if (err) {
       res.status(500).send(err.message);
     } else if (redirectLocation) {
